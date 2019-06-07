@@ -264,5 +264,3 @@ Promise.all(conveyorBelts)
     .then(() => {
         bar.stop();
     });
-
-//node ./index --folder="/media/mehran/Elements/Gallery/Time Lapse/Sunset2/blended" --keyframes=0001.png,0200.png,0400.png,0500.png,0700.png,0800.png,0900.png,1079.png --ext=png --concurrency=6 --width=1920
