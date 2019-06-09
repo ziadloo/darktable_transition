@@ -25,15 +25,24 @@ function filenameToNumber(filename, files) {
 function getXmp(folder, filename, fileNumber, operations, template) {
     const text = fs.readFileSync(path.join(folder, `${filename}.xmp`), 'utf8');
     const json = parser.toJson(text, {object: true, reversible: true});
-    const operationsParentPath = jp.paths(json, "$..['darktable:history']..*[?(@['darktable:operation'])]");
-    operationsParentPath[0].pop();
-    let operationParent = jp.value(json, jp.stringify(operationsParentPath[0]));
-    if (!Array.isArray(operationParent)) {
-        const propertyName = Object.keys(operationParent)[0];
-        const propertyValue = Object.values(operationParent)[0];
-        operationParent[propertyName] = [propertyValue];
-        operationParent = operationParent[propertyName];
+    let operationsParentPath = jp.paths(json, "$..['darktable:history']..*[?(@['darktable:operation'])]");
+    let operationParent = null;
+    if (operationsParentPath.length === 0) {
+        operationParent = jp.value(json, "$..['darktable:history']");
+        operationParent['rdf:Seq'] = {"rdf:li": []};
+        operationParent = operationParent['rdf:Seq']["rdf:li"];
     }
+    else {
+        operationsParentPath[0].pop();
+        operationParent = jp.value(json, jp.stringify(operationsParentPath[0]));
+        if (!Array.isArray(operationParent)) {
+            const propertyName = Object.keys(operationParent)[0];
+            const propertyValue = Object.values(operationParent)[0];
+            operationParent[propertyName] = [propertyValue];
+            operationParent = operationParent[propertyName];
+        }
+    }
+
     Object.keys(operations).map(opName => {
         const templateOp = jp.nodes(template, `$..['darktable:history']..*[?(@['darktable:operation']=='${opName}')]`);
         return Object.assign({}, templateOp[0].value, {
@@ -168,7 +177,7 @@ if (!fs.lstatSync(folder).isDirectory()) {
     throw `The folder ${folder} was not found`;
 }
 const imageFilenames = fs.readdirSync(folder).filter(f => f.endsWith(ext));
-const missingXmps = imageFilenames.filter(fn => !fs.lstatSync(path.join(folder, `${fn.xmp}`)).isFile());
+const missingXmps = imageFilenames.filter(fn => !fs.lstatSync(path.join(folder, `${fn}.xmp`)).isFile());
 if (missingXmps.length > 0) {
     throw `All the images need to be accompanied with xmp files. These images are missing xmp:\n${missingXmps.join("\n")}`;
 }

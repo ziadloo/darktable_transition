@@ -43,7 +43,7 @@ npm install
 The complete list of arguments supported by the script can be found in the next section but here I'm going to use the bare minimum:
 
 ```
-npm run --folder ~/Pictures/time-lapse --keyframes="001.png,050.png,100.png" --ext png
+node index.js --folder ~/Pictures/time-lapse --keyframes="001.png,050.png,100.png" --ext png
 ```
 
 This command will create a folder called `output` within the source folder and will apply the operations mentioned in the key frames to all the images from `001.png` to `100.png`. In order to interpolate the parameters for the operations between key frames, spline is used.
