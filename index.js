@@ -148,8 +148,8 @@ function commonOperations(folder, imageFilenames, keyFrameFilenames) {
 
 function exec(cmd, params) {
     const child = execFile(cmd, params);
-    child.stdout.on('data', () => {});
-    child.stderr.on('data',  () => {});
+    child.stdout.on('data', (d) => {/*console.log(d);*/});
+    child.stderr.on('data',  (d) => {/*console.log(d);*/});
     child.on('close', () => {});
     return new Promise((resolve, reject) => {
         child.addListener("error", reject);
@@ -204,6 +204,11 @@ if (!fs.lstatSync(outputFolder).isDirectory()) {
     fs.mkdirSync(outputFolder, {recursive: true});
 }
 
+let outputExt = 'png';
+if (argv.outputExt) {
+    outputExt = argv.outputExt;
+}
+
 let params = [];
 if (argv.width) {
     params.push(`--width ${argv.width}`);
@@ -247,7 +252,7 @@ function worker(folder, outputFolder, imageFilenames, operations, template) {
         const xmp = getXmp(folder, f, filenameToNumber(f, imageFilenames), operations, template);
 
         fs.writeFileSync(path.join(tempDirectory, `${f}.xmp`), xmp);
-        return exec(`darktable-cli`, [path.join(folder, f), path.join(tempDirectory, `${f}.xmp`), path.join(outputFolder, f)].concat(params))
+        return exec(`darktable-cli`, [path.join(folder, f), path.join(tempDirectory, `${f}.xmp`), path.join(outputFolder, `${f.split('.').slice(0, -1).join('.')}.${outputExt}`)].concat(params))
             .catch(err => {
                 console.log(err);
                 throw err;

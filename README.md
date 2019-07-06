@@ -1,10 +1,10 @@
 # Darktable Transition
 A wrapper around [darktable-cli](https://www.darktable.org/usermanual/en/overview_chapter.html#darktable_cli_commandline_parameters) to smoothly transit from one key frame to another. Initially designed for time-lapse videos.
 
-## Problem addressed
+## The problem addressed
 Following my hobby as an amature photographer, I needed a software to edit my time-lapse shots. While [darktable](https://www.darktable.org/) is perfect for single shots, it is not designed for time-lapses where there are hunddreds of images unless you want to apply the same styles to all of the frames or specify each individual file's style separately and manually. Thankfully, darktable comes with a cli version as well which can be used for automating a process. And that's what I've used in this project to transit from one style to another across the shots of a time-lapse. In other words, using this script you can provide styles for a few of the key frames in your time-lapse and the script will interpolate the styles for the frame in between smoothly (using a spline).
 
-## How to use
+## How to use it
 The easiest way to use this script is to follow a series of steps:
 
 **1.** Copy all your image files into one single folder
@@ -52,9 +52,10 @@ This command will create a folder called `output` within the source folder and w
 
 * `--folder`: The path to the folder holding the source images
 * `--keyframe`: A comma seperated list of image filenames that should be used as key frames
-* `--ext`: The extension of the files to be used as the source iamges
+* `--ext`: The extension of the files to be used as the source images
 * `--output`: The path to save the result images - defaults to `${source}/output`
 * `--concurrency`: An integer indicating the number of images to work on at the same time (to make a better use of your CPU cores) - defaults to your number of CPU cores / 4
+* `--outputExt`: The extension for the files to generate - defaults to `png`
 
 The following arguments will be passed to `darktable-cli` if they are present:
 
